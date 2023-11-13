@@ -1,6 +1,17 @@
 // Rock paper scissors, odin project
+const rockBtn = document.getElementById('rock');
+const paperBtn = document.getElementById('paper');
+const scissorsBtn = document.getElementById('scissors');
+const resetBtn = document.getElementById('reset');
+const roundResult = document.getElementById('result');
+const playerScoreText = document.getElementById('player-score');
+const computerScoreText = document.getElementById('computer-score');
+let result;
+let playerScore = 0;
+let computerScore = 0;
+
 function getComputerChoice() {
-    switch(Math.floor(Math.random()*3)) {
+    switch (Math.floor(Math.random() * 3)) {
         case 0:
             return 'rock';
         case 1:
@@ -10,29 +21,75 @@ function getComputerChoice() {
     }
 }
 
-function playGame(playerSelection, computerSelection) {
+function playRound(playerSelection, computerSelection) {
     playerSelection = playerSelection.toLowerCase();
     if (playerSelection === computerSelection) {
         return 'Tie';
     } else if (playerSelection === 'rock' && computerSelection === 'paper') {
-        return 'You lose. Paper beats rock.';
+        return 'Round lost. Paper beats rock.';
     } else if (playerSelection === 'paper' && computerSelection === 'scissors') {
-        return 'You lose. Scissors beats paper.';
+        return 'Round lost. Scissors beats paper.';
     } else if (playerSelection === 'scissors' && computerSelection === 'rock') {
-        return 'You lose. Rock beats scissors.';
+        return 'Round lost. Rock beats scissors.';
     }
-    return 'You win.';
+    return 'Round won.';
 }
 
-function game() {
+function resetGame() {
+    result = 'Game start!';
+    playerScore = 0;
+    computerScore = 0;
+    updateScore(result);
+}
+
+function updateScore(result) {
+    if (playerScore == 5 || computerScore == 5) {
+        resetGame();
+        return;
+    } else if (result === 'Round won.') {
+        playerScore += 1;
+    } else if (result.includes('Round lost.')) {
+        computerScore += 1;
+    }
+
+    roundResult.textContent = result;
+    playerScoreText.textContent = 'Player score: ' + playerScore;
+    computerScoreText.textContent = 'Computer score: ' + computerScore;
+
+    if (playerScore == 5) {
+        roundResult.textContent = "You won the game!";
+    } else if (computerScore == 5) {
+        roundResult.textContent = "You lost the game!";
+    }
+}
+
+rockBtn.addEventListener('click', () => {
+    updateScore(playRound('rock', getComputerChoice()));
+});
+
+paperBtn.addEventListener('click', () => {
+    updateScore(playRound('paper', getComputerChoice()));
+});
+
+scissorsBtn.addEventListener('click', () => {
+    updateScore(playRound('scissors', getComputerChoice()));
+});
+
+resetBtn.addEventListener('click', () => {
+    resetGame();
+})
+
+/*
+function playGame() {
     let playerScore = 0;
     let computerScore = 0;
-    for (let i=0; i<5; i++) {
+
+    for (let i = 0; i < 5; i++) {
         let playerSelection = prompt('Rock, paper or scissors: ', '');
-        let result = playGame(playerSelection, getComputerChoice());
-        if (result === 'You win.') {
+        let result = playRound(playerSelection, getComputerChoice());
+        if (result === 'Round won.') {
             playerScore += 1;
-        } else if (result.includes('You lose.')) {
+        } else if (result.includes('Round lost.')) {
             computerScore += 1;
         }
         console.log('Round: ' + String(i) + ', ' + result);
@@ -46,8 +103,9 @@ function game() {
         console.log('Tie! Both players total: ' + String(playerScore) + '.')
     } else if (playerScore < computerScore) {
         console.log('Computer total: ' + String(computerScore) + '.')
-        console.log('Your total: ' + String(playerScore) + '. You lost!')
+        console.log('Your total: ' + String(playerScore) + '. Round lost!')
     } else {
         console.log('Something is wrong with the scores.')
     }
 }
+*/
